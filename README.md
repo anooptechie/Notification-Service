@@ -15,7 +15,7 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 
 ---
 
-## 🚀 Current Features (Phase 1 + Phase 2)
+## 🚀 Current Features (Phase 1 - Phase 3)
 
 ### ✅ Thin Publisher API
 - Accepts events via `POST /events`
@@ -39,6 +39,30 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 - Email worker processes email jobs
 - Webhook worker processes webhook jobs
 
+### ✅ Modular Delivery Handlers (NEW)
+
+Workers delegate delivery logic to handlers:
+
+```text
+Worker → Handler → Delivery Logic
+``` id="s0r9yk"
+
+---
+
+Handlers:
+
+- `emailHandler.js`
+- `webhookHandler.js`
+
+---
+
+### 🧠 Why this matters
+
+- clean separation of concerns  
+- extensible architecture  
+- easy to plug in real providers later  
+
+
 ---
 
 ## 🧩 Architecture
@@ -51,8 +75,8 @@ Fan-out Worker
 email-queue webhook-queue
 ↓ ↓
 email-worker webhook-worker
-
-
+↓ ↓
+email-Handler webhook-Handler
 ---
 
 ## 📡 API
@@ -90,6 +114,7 @@ node src/api/server.js
 node src/worker/notificationWorker.js
 node src/worker/emailWorker.js
 node src/worker/webhookWorker.js
+
 🧪 Test with curl
 curl -X POST http://localhost:4000/events \
   -H "Content-Type: application/json" \
@@ -98,4 +123,5 @@ curl -X POST http://localhost:4000/events \
     "channels": ["email", "webhook"],
     "payload": { "itemId": "123" }
   }'
+
 

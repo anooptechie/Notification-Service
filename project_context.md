@@ -1,9 +1,3 @@
-
----
-
-# 📄 PROJECT_CONTEXT.md
-
-```md
 # Notification Service — Project Context
 
 ---
@@ -81,9 +75,8 @@ Communication is based on events, not direct service calls.
 
 ### 4. Fan-out Strategy (IMPORTANT)
 
-**Chosen approach: Channel-level jobs**
+**Chosen approach: Channel-level jobs**  
 1 event → multiple child jobs
-
 
 **Reason:**
 - failure isolation
@@ -118,9 +111,27 @@ Each channel has its own worker.
 
 ---
 
-## 🔄 Current System Flow
-Event → Queue → Fan-out → Channel Queues → Workers
+### 7. Modular Delivery Handlers (NEW)
 
+Delivery logic is separated from workers into dedicated handlers:
+
+- emailHandler.js
+- webhookHandler.js
+
+**Flow:**
+Worker → Handler → Delivery Logic
+
+**Reason:**
+- separation of concerns
+- clean architecture
+- easy integration of real providers later
+- avoids tight coupling between orchestration and execution
+
+---
+
+## 🔄 Current System Flow
+
+Event → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery
 
 ---
 
@@ -133,6 +144,7 @@ Event → Queue → Fan-out → Channel Queues → Workers
 - no idempotency yet
 - no complex retry strategies
 - no validation layer
+- handlers use console-based delivery (no real integrations yet)
 
 **Reason:**
 Focus on core system behavior first.
@@ -155,6 +167,7 @@ Focus on core system behavior first.
 - event-driven architecture
 - decoupling via queues
 - fan-out processing
+- multi-channel delivery
 
 ---
 
@@ -163,6 +176,7 @@ Focus on core system behavior first.
 - async workflows
 - worker-based processing
 - multi-queue systems
+- modular execution layer (handlers)
 
 ---
 
@@ -178,8 +192,9 @@ Focus on core system behavior first.
 
 ---
 
-### Phase 3
+### Phase 3 ✅
 - Channel handlers (email/webhook)
+- Separation of worker and delivery logic
 
 ### Phase 4
 - Retry strategies

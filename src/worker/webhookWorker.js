@@ -2,12 +2,14 @@ require("dotenv").config();
 const { Worker } = require("bullmq");
 const connection = require("../queue/connection");
 
+const sendWebhook = require("../handlers/webhookHandler");
+
 const worker = new Worker(
   "webhook-queue",
   async (job) => {
-    console.log("🌐 Sending WEBHOOK:", job.data);
+    await sendWebhook(job.data);
   },
-  { connection }
+  { connection },
 );
 
 console.log("🌐 Webhook worker started");

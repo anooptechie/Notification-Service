@@ -2,10 +2,12 @@ require("dotenv").config();
 const { Worker } = require("bullmq");
 const connection = require("../queue/connection");
 
+const sendEmail = require("../handlers/emailHandler");
+
 const worker = new Worker(
   "email-queue",
   async (job) => {
-    console.log("📧 Sending EMAIL:", job.data);
+    await sendEmail(job.data);
   },
   { connection }
 );

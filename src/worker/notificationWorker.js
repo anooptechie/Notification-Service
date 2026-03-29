@@ -14,27 +14,39 @@ const worker = new Worker(
 
     for (const channel of channels) {
       if (channel === "email") {
-        // await emailQueue.add("send-email", payload);
-        // console.log("➡️ Added EMAIL job");
-        await emailQueue.add("send-email", payload, {
-          attempts: 3,
-          backoff: {
-            type: "exponential",
-            delay: 1000,
+        await emailQueue.add(
+          "send-email",
+          {
+            ...payload,
+            parentJobId: job.id,
+            eventType: job.data.type,
           },
-        });
+          {
+            attempts: 3,
+            backoff: {
+              type: "exponential",
+              delay: 1000,
+            },
+          },
+        );
       }
 
       if (channel === "webhook") {
-        // await webhookQueue.add("send-webhook", payload);
-        // console.log("➡️ Added WEBHOOK job");
-        await webhookQueue.add("send-webhook", payload, {
-          attempts: 3,
-          backoff: {
-            type: "exponential",
-            delay: 1000,
+        await webhookQueue.add(
+          "send-webhook",
+          {
+            ...payload,
+            parentJobId: job.id,
+            eventType: job.data.type,
           },
-        });
+          {
+            attempts: 3,
+            backoff: {
+              type: "exponential",
+              delay: 1000,
+            },
+          },
+        );
       }
     }
 

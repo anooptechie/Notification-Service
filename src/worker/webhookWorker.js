@@ -13,7 +13,10 @@ const worker = new Worker(
 );
 
 worker.on("failed", (job, err) => {
-  console.error(`❌ Webhook job ${job.id} failed:`, err.message);
+  console.error(
+    `❌ [Parent ${job.data.parentJobId}] Webhook job ${job.id} failed:`,
+    err.message
+  );
 });
 
 console.log("🌐 Webhook worker started");

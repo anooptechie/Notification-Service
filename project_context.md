@@ -129,10 +129,51 @@ Worker → Handler → Delivery Logic
 
 ---
 
+### 8. Retry & Failure Handling (NEW)
+
+Retry behavior is handled by BullMQ:
+
+- automatic retries with exponential backoff
+- no custom retry logic required
+- failures propagated from handlers
+
+**Reason:**
+- leverages queue guarantees
+- simplifies system design
+- ensures resilience without complexity
+
+### 9. Dead Letter Queue (DLQ) (NEW)
+
+Failed jobs are retained after exhausting retries:
+
+- accessible via queue.getFailed()
+- inspectable using a custom DLQ inspector
+- supports manual retry
+
+**Reason:**
+- enables operational visibility
+- prevents silent failures
+- supports recovery workflows
+
+### 10. Correlation & Traceability (NEW)
+
+Parent job metadata is propagated to child jobs:
+
+- parentJobId passed to all channel jobs
+- logs include correlation context
+
+**Reason:**
+- improves debugging
+- enables tracing across distributed flow
+- aligns with real-world observability patterns
+
 ## 🔄 Current System Flow
 
 Event → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery
-
+                                   ↓
+                              Retry / Failure
+                                   ↓
+                                   DLQ
 ---
 
 ## ⚖️ Trade-offs
@@ -189,16 +230,6 @@ Focus on core system behavior first.
 ---
 
 ## 📈 Evolution Plan
-
----
-
-### Phase 3 ✅
-- Channel handlers (email/webhook)
-- Separation of worker and delivery logic
-
-### Phase 4
-- Retry strategies
-- DLQ + replay
 
 ### Phase 5
 - Idempotency

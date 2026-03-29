@@ -13,7 +13,10 @@ const worker = new Worker(
 );
 
 worker.on("failed", (job, err) => {
-  console.error(`❌ Email job ${job.id} failed:`, err.message);
+  console.error(
+    `❌ [Parent ${job.data.parentJobId}] Email job ${job.id} failed:`,
+    err.message,
+  );
 });
 
 console.log("📧 Email worker started");

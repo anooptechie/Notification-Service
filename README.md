@@ -15,7 +15,7 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 
 ---
 
-## 🚀 Current Features (Phase 1 - Phase 3)
+## 🚀 Current Features (Phase 1 - Phase 4)
 
 ### ✅ Thin Publisher API
 - Accepts events via `POST /events`
@@ -39,13 +39,11 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 - Email worker processes email jobs
 - Webhook worker processes webhook jobs
 
-### ✅ Modular Delivery Handlers (NEW)
+### ✅ Modular Delivery Handlers 
 
 Workers delegate delivery logic to handlers:
 
-```text
 Worker → Handler → Delivery Logic
-``` id="s0r9yk"
 
 ---
 
@@ -56,12 +54,24 @@ Handlers:
 
 ---
 
-### 🧠 Why this matters
+### ✅ Retry Strategy 
+- Automatic retries using BullMQ
+- Exponential backoff applied
+- No manual retry logic required
 
-- clean separation of concerns  
-- extensible architecture  
-- easy to plug in real providers later  
+---
 
+### ✅ Retry Strategy 
+- Automatic retries using BullMQ
+- Exponential backoff applied
+- No manual retry logic required
+
+---
+
+### ✅ Dead Letter Queue (DLQ)
+- Failed jobs are stored after exhausting retries
+- Inspectable via DLQ inspector
+- Supports manual retry of failed jobs
 
 ---
 

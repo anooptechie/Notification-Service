@@ -194,13 +194,59 @@ The system is fully containerized using Docker:
 - simplifies local development and testing
 - aligns with real-world deployment practices
 
+### 13. Real External Integration (Email via SMTP)
+The system integrates with a real email provider using Nodemailer:
+
+- uses SMTP (Gmail) with App Password authentication
+- integrated at the handler layer
+- leverages existing retry + DLQ system for failure handling
+
+**Reason:**
+- demonstrates real-world dependency handling
+- validates system behavior under external failures
+- avoids over-engineering while adding realism
+
+### 14. Failure Isolation Across Channels
+Each notification channel operates independently:
+
+- email and webhook jobs are separate
+- failure in one channel does not impact others
+- retries handled per-channel
+
+**Reason:**
+- aligns with real-world distributed systems
+- prevents cascading failures
+- improves system resilience
+
+### 15. Retry Behavior with External Systems
+Retries are designed to handle transient external failures:
+
+- simulated and real failures tested
+- exponential backoff applied
+- success on retry does not duplicate side effects
+
+**Reason:**
+- external systems are unreliable by nature
+- ensures eventual success without duplication
+
 ## 🔄 Current System Flow
 
-Event → Idempotency Check → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery
-                                   ↓
-                              Retry / Failure
-                                   ↓
-                                   DLQ
+Client
+  ↓
+Idempotent API
+  ↓
+Notification Queue
+  ↓
+Fan-out Worker
+  ↓
+Email Queue        Webhook Queue
+  ↓                  ↓
+Email Worker     Webhook Worker
+  ↓                  ↓
+SMTP (Gmail)     HTTP Call
+  ↓                  ↓
+Retry → DLQ       Retry → DLQ
+
 ---
 
 ## ⚖️ Trade-offs
@@ -254,13 +300,6 @@ Focus on core system behavior first.
 
 ---
 
-## 📈 Evolution Plan
-
-### Phase 6
-- Observability
-
----
-
 ## 🧠 Key Insight
 
 > This project is not about building more APIs —  
@@ -273,3 +312,4 @@ Focus on core system behavior first.
 This project represents:
 
 > A transition from API-centric backend development to **system-oriented backend engineering**
+

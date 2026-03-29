@@ -99,6 +99,23 @@ docker compose up --build
 
 ---
 
+### ✅ Real Email Delivery (NEW)
+
+- Email delivery implemented using Nodemailer (SMTP)
+- Integrated with Gmail using App Password authentication
+- Works with retry + DLQ mechanism
+- Demonstrates handling of real external dependencies
+
+---
+
+### 💡 Behavior:
+
+- Temporary failures → retried automatically  
+- Persistent failures → moved to DLQ  
+- Successful retry → no duplicate emails (idempotent system)
+
+---
+
 ## 🧩 Architecture
 
 POST /events
@@ -114,6 +131,16 @@ email-worker webhook-worker
 email-Handler webhook-Handler
 
 ---
+
+## 🧠 System Capabilities
+
+- Fault-tolerant job processing  
+- Per-channel failure isolation  
+- Retry with exponential backoff  
+- Dead Letter Queue (DLQ) with replay  
+- Idempotent API (duplicate-safe)  
+- Real external integration (SMTP email)  
+- Containerized deployment (Docker)  
 
 ## 📡 API
 

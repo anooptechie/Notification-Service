@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    command: node src/api/server.js
+    ports:
+      - "4000:4000"
+    depends_on:
+      - redis
+
+  notification-worker:
+    build: .
+    command: node src/worker/notificationWorker.js
+    depends_on:
+      - redis
+
+  email-worker:
+    build: .
+    command: node src/worker/emailWorker.js
+    depends_on:
+      - redis
+
+  webhook-worker:
+    build: .
+    command: node src/worker/webhookWorker.js
+    depends_on:
+      - redis

@@ -9,7 +9,11 @@ const worker = new Worker(
   async (job) => {
     await sendEmail(job.data);
   },
-  { connection }
+  { connection },
 );
+
+worker.on("failed", (job, err) => {
+  console.error(`❌ Email job ${job.id} failed:`, err.message);
+});
 
 console.log("📧 Email worker started");

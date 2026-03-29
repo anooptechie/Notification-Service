@@ -181,6 +181,19 @@ The API enforces idempotent request handling:
 - prevents duplicate side effects
 - aligns with real-world API design patterns
 
+### 12. Containerized Deployment (NEW)
+
+The system is fully containerized using Docker:
+
+- API, workers, and Redis run as separate services
+- orchestrated via docker-compose
+- system can be started with a single command
+
+**Reason:**
+- ensures reproducibility across environments
+- simplifies local development and testing
+- aligns with real-world deployment practices
+
 ## 🔄 Current System Flow
 
 Event → Idempotency Check → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery

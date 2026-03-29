@@ -90,6 +90,13 @@ Handlers:
 - Ensures safe retries from clients
 - Backed by Redis key storage with TTL
 
+## 🐳 Docker Support
+
+Run the entire system with a single command:
+
+```bash
+docker compose up --build
+
 ---
 
 ## 🧩 Architecture

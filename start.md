@@ -33,7 +33,24 @@ Payload: { type: 'test.event', message: 'Hello Notification Service' }
   }'
 
 8. Modern Startup 
-npm run dev 
-redis-server
-paste 7(job)
+docker compose run 
+
+This command works inside VS Code Terminal
+node src/utils/dlqInspector.js | to check dlq emails and webhooks | this works in vscode terminal
+
+This command works inside Github CodeSpaces Terminal
+docker exec -it <container_name> node src/utils/dlqInspector.js | docker exec -it notification-service-email-worker-1 node src/utils/dlqInspector.js
+
+in dlqInspector.js we have retryAllFailedJobs function. Make sure you uncomment and run, node src/utils/dlqInspector.js in the terminal.
+
+
+9. curl -X POST http://localhost:4000/events \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: email-test-1" \
+  -d '{
+    "type": "inventory.low_stock",
+    "channels": ["email"],
+    "payload": { "itemId": "123" }
+  }'
+
 

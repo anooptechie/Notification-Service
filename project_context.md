@@ -206,7 +206,18 @@ The system integrates with a real email provider using Nodemailer:
 - validates system behavior under external failures
 - avoids over-engineering while adding realism
 
-### 14. Failure Isolation Across Channels
+### 14. Webhook Delivery Implementation
+The system supports webhook-based notification delivery using HTTP POST requests.
+
+- implemented at the handler layer using Axios
+- configurable via environment variable (WEBHOOK_URL)
+
+**Design Considerations:**
+- webhook delivery is treated as an external dependency
+- handler-level integration keeps business logic decoupled from transport concerns
+- timeout ensures system stability under slow or unresponsive endpoints
+
+### 15. Failure Isolation Across Channels
 Each notification channel operates independently:
 
 - email and webhook jobs are separate
@@ -218,7 +229,7 @@ Each notification channel operates independently:
 - prevents cascading failures
 - improves system resilience
 
-### 15. Retry Behavior with External Systems
+### 16. Retry Behavior with External Systems
 Retries are designed to handle transient external failures:
 
 - simulated and real failures tested
@@ -243,7 +254,7 @@ Email Queue        Webhook Queue
   ↓                  ↓
 Email Worker     Webhook Worker
   ↓                  ↓
-SMTP (Gmail)     HTTP Call
+SMTP (Gmail)     HTTP Call (Webhook.site)
   ↓                  ↓
 Retry → DLQ       Retry → DLQ
 

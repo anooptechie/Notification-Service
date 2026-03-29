@@ -52,18 +52,10 @@ Worker → Handler → Delivery Logic
 
 ---
 
-Handlers:
+### ✅ Handlers:
 
 - `emailHandler.js`
 - `webhookHandler.js`
-
----
-
-### ✅ Retry Strategy
-
-- Automatic retries using BullMQ
-- Exponential backoff applied
-- No manual retry logic required
 
 ---
 
@@ -99,12 +91,21 @@ docker compose up --build
 
 ---
 
-### ✅ Real Email Delivery (NEW)
+### ✅ Real Email Delivery 
 
 - Email delivery implemented using Nodemailer (SMTP)
 - Integrated with Gmail using App Password authentication
 - Works with retry + DLQ mechanism
 - Demonstrates handling of real external dependencies
+
+---
+
+### 🌐 Webhook Delivery (Test-based)
+
+- Webhook delivery implemented via HTTP POST requests
+- Uses external endpoint (Webhook.site) for request inspection
+- Integrated with retry + DLQ mechanism
+- Demonstrates handling of external HTTP-based integrations
 
 ---
 
@@ -140,6 +141,7 @@ email-Handler webhook-Handler
 - Dead Letter Queue (DLQ) with replay  
 - Idempotent API (duplicate-safe)  
 - Real external integration (SMTP email)  
+- Uses external endpoint (Webhook.site) for request inspection
 - Containerized deployment (Docker)  
 
 ## 📡 API
@@ -188,5 +190,5 @@ curl -X POST http://localhost:4000/events \
     "payload": { "itemId": "123" }
   }'
 
-
 ```
+

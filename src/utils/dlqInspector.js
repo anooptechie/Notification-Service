@@ -62,5 +62,5 @@ async function retryAllFailedJobs() {
   await inspectDLQ();
 
   // 👉 Uncomment when you want to retry
-//   await retryAllFailedJobs();
+  await retryAllFailedJobs();
 })();

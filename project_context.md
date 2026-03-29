@@ -111,7 +111,7 @@ Each channel has its own worker.
 
 ---
 
-### 7. Modular Delivery Handlers (NEW)
+### 7. Modular Delivery Handlers 
 
 Delivery logic is separated from workers into dedicated handlers:
 
@@ -129,7 +129,7 @@ Worker → Handler → Delivery Logic
 
 ---
 
-### 8. Retry & Failure Handling (NEW)
+### 8. Retry & Failure Handling
 
 Retry behavior is handled by BullMQ:
 
@@ -142,7 +142,7 @@ Retry behavior is handled by BullMQ:
 - simplifies system design
 - ensures resilience without complexity
 
-### 9. Dead Letter Queue (DLQ) (NEW)
+### 9. Dead Letter Queue (DLQ) 
 
 Failed jobs are retained after exhausting retries:
 
@@ -155,7 +155,7 @@ Failed jobs are retained after exhausting retries:
 - prevents silent failures
 - supports recovery workflows
 
-### 10. Correlation & Traceability (NEW)
+### 10. Correlation & Traceability 
 
 Parent job metadata is propagated to child jobs:
 
@@ -167,9 +167,23 @@ Parent job metadata is propagated to child jobs:
 - enables tracing across distributed flow
 - aligns with real-world observability patterns
 
+### 11. Idempotency
+
+The API enforces idempotent request handling:
+
+- requires Idempotency-Key header
+- checks Redis before enqueueing
+- prevents duplicate job creation
+- uses TTL to expire stored keys
+
+**Reason:**
+- ensures consistency under retries
+- prevents duplicate side effects
+- aligns with real-world API design patterns
+
 ## 🔄 Current System Flow
 
-Event → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery
+Event → Idempotency Check → Queue → Fan-out → Channel Queues → Workers → Handlers → Delivery
                                    ↓
                               Retry / Failure
                                    ↓
@@ -201,8 +215,6 @@ Focus on core system behavior first.
 
 ## 🚀 What This System Demonstrates
 
----
-
 ### System Design
 
 - event-driven architecture
@@ -230,9 +242,6 @@ Focus on core system behavior first.
 ---
 
 ## 📈 Evolution Plan
-
-### Phase 5
-- Idempotency
 
 ### Phase 6
 - Observability

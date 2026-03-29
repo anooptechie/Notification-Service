@@ -1,5 +1,5 @@
 1. redis-server
-2. njsode src/api/server.js 
+2. node src/api/server.js 
 3. node src/worker/notificationWorker
 4. node src/worker/emailWorker.js
 5. node src/worker/webhookWorker.js

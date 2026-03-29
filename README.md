@@ -15,31 +15,36 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 
 ---
 
-## 🚀 Current Features (Phase 1 - Phase 4)
+## 🚀 Current Features (Phase 1 - Phase 5)
 
 ### ✅ Thin Publisher API
+
 - Accepts events via `POST /events`
 - Enqueues jobs into Redis queue
 - Responds immediately with `202 Accepted`
 
 ### ✅ Asynchronous Processing
+
 - Jobs are processed independently of API lifecycle
 - Decoupled producer and consumer
 
 ### ✅ Fan-out Architecture
+
 - One event can trigger multiple notification channels
 - Parent job splits into multiple child jobs
 
 ### ✅ Multi-Queue System
+
 - `notification-queue` → parent jobs
 - `email-queue` → email jobs
 - `webhook-queue` → webhook jobs
 
 ### ✅ Independent Workers
+
 - Email worker processes email jobs
 - Webhook worker processes webhook jobs
 
-### ✅ Modular Delivery Handlers 
+### ✅ Modular Delivery Handlers
 
 Workers delegate delivery logic to handlers:
 
@@ -54,14 +59,16 @@ Handlers:
 
 ---
 
-### ✅ Retry Strategy 
+### ✅ Retry Strategy
+
 - Automatic retries using BullMQ
 - Exponential backoff applied
 - No manual retry logic required
 
 ---
 
-### ✅ Retry Strategy 
+### ✅ Retry Strategy
+
 - Automatic retries using BullMQ
 - Exponential backoff applied
 - No manual retry logic required
@@ -69,13 +76,24 @@ Handlers:
 ---
 
 ### ✅ Dead Letter Queue (DLQ)
+
 - Failed jobs are stored after exhausting retries
 - Inspectable via DLQ inspector
 - Supports manual retry of failed jobs
 
 ---
 
+### ✅ Idempotency
+
+- Prevents duplicate job creation
+- Uses Idempotency-Key header
+- Ensures safe retries from clients
+- Backed by Redis key storage with TTL
+
+---
+
 ## 🧩 Architecture
+
 POST /events
 ↓
 notification-queue
@@ -87,6 +105,7 @@ email-queue webhook-queue
 email-worker webhook-worker
 ↓ ↓
 email-Handler webhook-Handler
+
 ---
 
 ## 📡 API
@@ -128,6 +147,7 @@ node src/worker/webhookWorker.js
 🧪 Test with curl
 curl -X POST http://localhost:4000/events \
   -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-key-123" \
   -d '{
     "type": "inventory.low_stock",
     "channels": ["email", "webhook"],
@@ -135,3 +155,4 @@ curl -X POST http://localhost:4000/events \
   }'
 
 
+```

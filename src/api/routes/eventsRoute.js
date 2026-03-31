@@ -5,6 +5,7 @@ const notificationQueue = require("../../queue/notificationQueue");
 const connection = require("../../queue/connection");
 const { v4: uuidv4 } = require("uuid");
 const logger = require("../../utils/logger");
+const { eventSchema } = require("../validator/eventValidator");
 
 // Redis client (same connection used by BullMQ)
 const redis = connection;
@@ -13,14 +14,31 @@ router.post("/", async (req, res) => {
   const traceId = uuidv4(); // generate early for full trace coverage
 
   try {
-    const event = req.body;
     const idempotencyKey = req.headers["idempotency-key"];
+
+    // 🔍 Validate request body
+    const parseResult = eventSchema.safeParse(req.body);
+
+    if (!parseResult.success) {
+      logger.warn({
+        msg: "Invalid request payload",
+        traceId,
+        errors: parseResult.error.errors,
+      });
+
+      return res.status(400).json({
+        error: "Invalid request payload",
+        details: parseResult.error.errors,
+      });
+    }
+
+    const event = parseResult.data;
 
     logger.info({
       msg: "Incoming request",
       traceId,
       idempotencyKey,
-      eventType: event?.type,
+      eventType: event.type,
     });
 
     if (!idempotencyKey) {

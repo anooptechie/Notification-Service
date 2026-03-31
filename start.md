@@ -54,3 +54,6 @@ in dlqInspector.js we have retryAllFailedJobs function. Make sure you uncomment 
   }'
 
 
+10. 
+curl localhost:4001/metrics - email Job
+curl localhost:4002/metrics - webhook Job

@@ -4,13 +4,20 @@ const connection = require("../queue/connection");
 
 const emailQueue = require("../queue/emailQueue");
 const webhookQueue = require("../queue/webhookQueue");
+const logger = require("../utils/logger");
 
 const worker = new Worker(
   "notification-queue",
   async (job) => {
-    console.log("📩 Parent job received:", job.id);
+    const { channels = [], payload, traceId, type } = job.data;
 
-    const { channels = [], payload } = job.data;
+    logger.info({
+      msg: "Processing notification job",
+      jobId: job.id,
+      traceId,
+      channels,
+      eventType: type,
+    });
 
     for (const channel of channels) {
       if (channel === "email") {
@@ -19,7 +26,8 @@ const worker = new Worker(
           {
             ...payload,
             parentJobId: job.id,
-            eventType: job.data.type,
+            eventType: type,
+            traceId, // 🔥 propagate trace
           },
           {
             attempts: 3,
@@ -27,8 +35,14 @@ const worker = new Worker(
               type: "exponential",
               delay: 1000,
             },
-          },
+          }
         );
+
+        logger.info({
+          msg: "Email job created",
+          parentJobId: job.id,
+          traceId,
+        });
       }
 
       if (channel === "webhook") {
@@ -37,7 +51,8 @@ const worker = new Worker(
           {
             ...payload,
             parentJobId: job.id,
-            eventType: job.data.type,
+            eventType: type,
+            traceId, // 🔥 propagate trace
           },
           {
             attempts: 3,
@@ -45,14 +60,24 @@ const worker = new Worker(
               type: "exponential",
               delay: 1000,
             },
-          },
+          }
         );
+
+        logger.info({
+          msg: "Webhook job created",
+          parentJobId: job.id,
+          traceId,
+        });
       }
     }
 
-    console.log("🔀 Fan-out completed for job:", job.id);
+    logger.info({
+      msg: "Fan-out completed",
+      jobId: job.id,
+      traceId,
+    });
   },
-  { connection },
+  { connection }
 );
 
-console.log("🚀 Notification (fan-out) worker started");
+logger.info({ msg: "Notification (fan-out) worker started" });

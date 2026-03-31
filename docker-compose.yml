@@ -11,31 +11,27 @@ services:
     command: node src/api/server.js
     ports:
       - "4000:4000"
-    env_file:
-      - .env
     depends_on:
       - redis
 
   notification-worker:
     build: .
     command: node src/worker/notificationWorker.js
-    env_file:
-      - .env
     depends_on:
       - redis
 
   email-worker:
     build: .
     command: node src/worker/emailWorker.js
-    env_file:
-      - .env
+    ports:
+      - "4001:4001" # 🔥 expose metrics
     depends_on:
       - redis
 
   webhook-worker:
     build: .
     command: node src/worker/webhookWorker.js
-    env_file:
-      - .env
+    ports:
+      - "4002:4002" # 🔥 expose metrics
     depends_on:
       - redis

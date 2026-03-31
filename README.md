@@ -117,6 +117,60 @@ docker compose up --build
 
 ---
 
+### ✅ Structured Logging 
+
+- Implemented structured logging using Pino
+- Replaced console logs with JSON-based logs
+- Logs include contextual metadata:
+  - traceId
+  - jobId
+  - parentJobId
+- Enables easier debugging and log aggregation
+
+---
+
+### ✅ End-to-End Traceability
+
+- Each request is assigned a unique `traceId`
+- `traceId` is propagated across:
+  - API → notification worker → channel workers → handlers
+- Enables tracking a request across the entire system
+
+---
+
+### ✅ Prometheus Metrics 
+
+- Integrated `prom-client` for metrics collection
+- Tracks:
+  - `jobs_processed_total`
+  - `jobs_failed_total`
+- Metrics are exposed via `/metrics` endpoints
+
+---
+
+### ✅ Per-Service Metrics Exposure 
+
+- Metrics are exposed independently per service:
+  - API → `localhost:4000/metrics`
+  - Email Worker → `localhost:4001/metrics`
+  - Webhook Worker → `localhost:4002/metrics`
+- Aligns with distributed system design (no shared in-memory metrics)
+
+---
+
+### ✅ Observability Across System 
+
+- Combines:
+  - structured logging (debugging)
+  - traceId propagation (request tracking)
+  - metrics (system behavior)
+- Provides visibility into:
+  - retries
+  - failures
+  - processing flow
+
+---
+
 ## 🧩 Architecture
 
 POST /events

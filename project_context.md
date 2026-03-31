@@ -240,6 +240,32 @@ Retries are designed to handle transient external failures:
 - external systems are unreliable by nature
 - ensures eventual success without duplication
 
+### 17. Observability & Monitoring 
+
+The system includes basic observability features across all services:
+
+- structured logging using Pino
+- traceId propagation across API, workers, and handlers
+- Prometheus-compatible metrics using prom-client
+
+Each service exposes its own `/metrics` endpoint:
+
+- API
+- email worker
+- webhook worker
+
+**Design Considerations:**
+
+- metrics are maintained per-process (no shared state)
+- aligns with distributed system architecture
+- avoids incorrect aggregation of metrics across services
+
+**Benefits:**
+
+- enables debugging using structured logs
+- allows tracing of requests across system boundaries
+- provides visibility into system behavior (failures, retries, throughput)
+
 ## 🔄 Current System Flow
 
 Client

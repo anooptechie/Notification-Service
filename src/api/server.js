@@ -5,10 +5,14 @@ const eventsRoute = require("./routes/eventsRoute");
 
 const logger = require("../utils/logger");
 const { register } = require("../utils/metrics");
-const bullBoard = require("./bullBoard");
 
 const app = express();
-app.use("/admin/queues", bullBoard.getRouter());
+
+// ✅ Only load Bull Board in non-test environment
+if (process.env.NODE_ENV !== "test") {
+  const bullBoard = require("./bullBoard");
+  app.use("/admin/queues", bullBoard.getRouter());
+}
 
 // Middleware
 app.use(express.json());
@@ -31,13 +35,17 @@ app.get("/metrics", async (req, res) => {
   }
 });
 
-
-// Start server
+// Start server ONLY if not in test
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  logger.info({
-    msg: "API started",
-    port: PORT,
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    logger.info({
+      msg: "API started",
+      port: PORT,
+    });
   });
-});
+}
+
+// ✅ IMPORTANT: export app for testing
+module.exports = app;

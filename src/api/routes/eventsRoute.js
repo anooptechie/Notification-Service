@@ -7,11 +7,20 @@ const { v4: uuidv4 } = require("uuid");
 const logger = require("../../utils/logger");
 const { eventSchema } = require("../validator/eventValidator");
 
-// Redis client (same connection used by BullMQ)
+// 🔥 Detect test environment
+const isTest = process.env.NODE_ENV === "test";
+
+// 🔥 In-memory store for tests (persists across requests)
+const testStore = global.__IDEMPOTENCY_STORE__ || new Map();
+if (isTest) {
+  global.__IDEMPOTENCY_STORE__ = testStore;
+}
+
+// Redis client (production)
 const redis = connection;
 
 router.post("/", async (req, res) => {
-  const traceId = uuidv4(); // generate early for full trace coverage
+  const traceId = uuidv4();
 
   try {
     const idempotencyKey = req.headers["idempotency-key"];
@@ -52,8 +61,14 @@ router.post("/", async (req, res) => {
       });
     }
 
-    // Check duplicate
-    const exists = await redis.get(idempotencyKey);
+    // 🔥 Check duplicate (TEST vs PROD)
+    let exists;
+
+    if (isTest) {
+      exists = testStore.has(idempotencyKey);
+    } else {
+      exists = await redis.get(idempotencyKey);
+    }
 
     if (exists) {
       logger.info({
@@ -80,8 +95,12 @@ router.post("/", async (req, res) => {
       jobId: job.id,
     });
 
-    // Store key with TTL
-    await redis.set(idempotencyKey, "processed", "EX", 3600);
+    // 🔥 Store key (TEST vs PROD)
+    if (isTest) {
+      testStore.set(idempotencyKey, true);
+    } else {
+      await redis.set(idempotencyKey, "processed", "EX", 3600);
+    }
 
     return res.status(202).json({
       status: "accepted",

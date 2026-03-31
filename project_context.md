@@ -306,6 +306,82 @@ Retry → DLQ       Retry → DLQ
 
 ---
 
+## 🧪 Testing
+
+The system includes integration tests that validate the correctness, safety, and reliability of the event ingestion layer.
+
+Tests are implemented using Jest and Supertest, with external dependencies (BullMQ, Redis) mocked to ensure deterministic behavior.
+
+---
+
+### ✅ Test Coverage
+
+#### 1. Event Acceptance
+
+- Verifies that valid events are accepted
+- Ensures jobs are successfully enqueued
+- Confirms API responds with `202 Accepted`
+
+---
+
+#### 2. Payload Validation
+
+- Rejects malformed or invalid requests
+- Prevents invalid data from entering the system
+
+---
+
+#### 3. Idempotency Key Enforcement
+
+- Ensures requests without `Idempotency-Key` are rejected
+- Guarantees safe retry behavior from clients
+
+---
+
+#### 4. Duplicate Request Handling
+
+- Detects repeated requests with the same idempotency key
+- Prevents duplicate job creation
+
+---
+
+#### 5. Failure Safety (Critical)
+
+- Simulates queue failure during job enqueue
+- Ensures idempotency key is NOT stored on failure
+- Allows safe retry of failed requests
+
+---
+
+### 🧠 Testing Strategy
+
+- Uses **integration-style tests** (not unit tests)
+- Tests full request flow:
+  - API → validation → idempotency → queue interaction
+- Mocks:
+  - BullMQ queues
+  - Redis (via in-memory store for tests)
+
+---
+
+### 🎯 Guarantees Provided
+
+The test suite ensures:
+
+- Correct request validation
+- Duplicate-safe event ingestion
+- No data loss during failures
+- Deterministic and isolated test execution
+
+---
+
+### 🧪 Run Tests
+
+```bash
+npm test
+
+---
+
 ## ⚖️ Trade-offs
 
 ---
@@ -356,6 +432,8 @@ Focus on core system behavior first.
 - balances simplicity with correctness
 
 ---
+
+
 
 ## 🧠 Key Insight
 

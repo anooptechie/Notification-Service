@@ -1,3 +1,11 @@
+// 🔥 Do NOT initialize Bull Board in test environment
+if (process.env.NODE_ENV === "test") {
+  module.exports = {
+    getRouter: () => (req, res, next) => next(),
+  };
+  return;
+}
+
 const { createBullBoard } = require("@bull-board/api");
 const { BullMQAdapter } = require("@bull-board/api/bullMQAdapter");
 const { ExpressAdapter } = require("@bull-board/express");

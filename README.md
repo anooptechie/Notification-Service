@@ -171,6 +171,28 @@ docker compose up --build
 
 ---
 
+### ✅ Queue Monitoring UI (Bull Board) (NEW)
+
+- Integrated Bull Board for visual queue inspection
+- Accessible via: `/admin/queues`
+- Supports:
+  - viewing jobs (waiting, active, completed, failed)
+  - inspecting job payload and metadata
+  - retrying failed jobs manually
+- Covers all queues:
+  - notification-queue
+  - email-queue
+  - webhook-queue
+
+---
+
+### ✅ Operational Visibility 
+
+- Provides real-time visibility into queue state
+- Complements logs and metrics with UI-based debugging
+- Enables manual intervention (retry failed jobs)
+- Useful for debugging retries and DLQ scenarios
+
 ## 🧩 Architecture
 
 POST /events

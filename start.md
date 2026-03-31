@@ -57,3 +57,14 @@ in dlqInspector.js we have retryAllFailedJobs function. Make sure you uncomment 
 10. 
 curl localhost:4001/metrics - email Job
 curl localhost:4002/metrics - webhook Job
+
+11. curl -X POST http://localhost:4000/events \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: test-12345678" \
+  -d '{
+    "type": "inventory.low_stock",
+    "channels": ["email", "webhook"],
+    "payload": { "itemId": "123" }
+  }'
+
+12. Bull Board - admin/queues

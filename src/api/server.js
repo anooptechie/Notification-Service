@@ -5,8 +5,10 @@ const eventsRoute = require("./routes/eventsRoute");
 
 const logger = require("../utils/logger");
 const { register } = require("../utils/metrics");
+const bullBoard = require("./bullBoard");
 
 const app = express();
+app.use("/admin/queues", bullBoard.getRouter());
 
 // Middleware
 app.use(express.json());
@@ -28,6 +30,7 @@ app.get("/metrics", async (req, res) => {
     res.status(500).end();
   }
 });
+
 
 // Start server
 const PORT = process.env.PORT || 4000;

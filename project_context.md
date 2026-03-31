@@ -266,6 +266,26 @@ Each service exposes its own `/metrics` endpoint:
 - allows tracing of requests across system boundaries
 - provides visibility into system behavior (failures, retries, throughput)
 
+### 18. Queue Observability via Bull Board 
+
+The system integrates Bull Board to provide a UI for inspecting and managing queues:
+
+- visualizes job lifecycle (waiting, active, completed, failed)
+- supports manual retry of failed jobs
+- exposes job payload and metadata for debugging
+
+**Design Considerations:**
+
+- operates directly on BullMQ queues (no additional storage layer)
+- intended for operational debugging and inspection
+- complements structured logs and metrics
+
+**Benefits:**
+
+- improves developer visibility into asynchronous processing
+- simplifies debugging of retries and failures
+- enables operational control without relying solely on logs
+
 ## 🔄 Current System Flow
 
 Client

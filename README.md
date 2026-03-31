@@ -269,6 +269,53 @@ The test suite ensures:
 ```bash
 npm test
 
+---
+
+### ✅ Continuous Integration (CI)
+
+- Integrated GitHub Actions for automated test execution
+- Runs on every push and pull request
+- Ensures system correctness and prevents regressions
+
+---
+
+### ⚙️ CI Pipeline
+
+The CI workflow performs the following steps:
+
+- Checks out repository code
+- Sets up Node.js environment
+- Installs dependencies
+- Executes test suite using Jest
+
+---
+
+### 🧪 Test Execution in CI
+
+- Runs in isolated test environment (`NODE_ENV=test`)
+- Uses mocked infrastructure:
+  - BullMQ (queue system)
+  - Redis (idempotency store via in-memory Map)
+- Ensures deterministic and reliable test results
+
+---
+
+### 🎯 Purpose
+
+- Validate correctness of event ingestion flow
+- Protect idempotency guarantees
+- Prevent regressions in failure handling logic
+
+---
+
+### 🚀 Outcome
+
+- Every code change is automatically verified
+- Broken changes are caught early
+- Maintains reliability of the system as features evolve
+
+---
+
 ## 🧩 Architecture
 
 POST /events

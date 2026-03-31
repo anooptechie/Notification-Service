@@ -286,6 +286,77 @@ The system integrates Bull Board to provide a UI for inspecting and managing que
 - simplifies debugging of retries and failures
 - enables operational control without relying solely on logs
 
+### 19. Continuous Integration (CI)
+
+The system integrates a minimal CI pipeline using GitHub Actions to ensure ongoing correctness as the system evolves.
+
+---
+
+### 🎯 Purpose
+
+CI is used to validate:
+
+- correctness of event ingestion
+- idempotency guarantees
+- failure safety behavior
+
+It ensures that new changes do not break existing system guarantees.
+
+---
+
+### 🧠 Design Approach
+
+The CI pipeline is intentionally minimal and focused:
+
+- no external dependencies (Redis, Docker)
+- relies on mocked infrastructure
+- executes integration-style tests
+
+**Reason:**
+
+- avoids flakiness caused by external services
+- ensures fast and deterministic execution
+- aligns with system behavior testing rather than infrastructure testing
+
+---
+
+### ⚙️ Pipeline Behavior
+
+On every push and pull request:
+
+- installs dependencies
+- runs Jest test suite
+- validates full request flow:
+  - API → validation → idempotency → queue interaction
+
+---
+
+### 🧪 Environment Strategy
+
+CI uses the same configuration as the test environment:
+
+- `NODE_ENV=test`
+- in-memory idempotency store
+- mocked BullMQ queues
+
+This ensures consistency between local testing and CI execution.
+
+---
+
+### 💡 Design Insight
+
+> CI is treated as a safety layer, not a deployment mechanism.
+
+The goal is not to automate infrastructure, but to guarantee system correctness under evolving conditions.
+
+---
+
+### 🚀 Impact
+
+- prevents regressions in critical flows
+- ensures reliability of idempotency and failure handling
+- enables safe iteration on system design
+
 ## 🔄 Current System Flow
 
 Client

@@ -15,7 +15,7 @@ This service demonstrates how to build a **consumer-focused backend system** tha
 
 ---
 
-## 🚀 Current Features (Phase 1 - Phase 5)
+## 🚀 Current Features
 
 ### ✅ Thin Publisher API
 

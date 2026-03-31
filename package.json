@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "dev": "concurrently \"node src/api/server.js\" \"node src/worker/notificationWorker.js\" \"node src/worker/emailWorker.js\" \"node src/worker/webhookWorker.js\""
   },
   "keywords": [],
